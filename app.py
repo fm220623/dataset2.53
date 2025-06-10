@@ -9,32 +9,28 @@ st.set_page_config(layout="wide", page_title="Прогноз погоды", page
 st.title("📚 Прогноз погоды с помощью ML")
 st.write("Эта программа предсказывает тип погоды по параметрам, которые вы введете")
 
-# Загружаем данные
 df = pd.read_csv("weather_classification_data.csv")
 df = df.dropna()
 
 st.subheader("Данные")
 st.write(df.head())
 
-# График (небольшой)
 st.subheader("График распределения типов погоды")
 fig, ax = plt.subplots(figsize=(6, 3))
 sns.countplot(x="Weather Type", data=df, ax=ax)
 plt.xticks(rotation=30)
 st.pyplot(fig)
 
-# Готовим данные
 y = df["Weather Type"]
 X = df.drop("Weather Type", axis=1)
 X = pd.get_dummies(X)
 
-# Обучаем модель
+# Оm
 model = RandomForestClassifier()
 model.fit(X, y)
 
 st.sidebar.header("Введите параметры:")
 
-# Ввод пользователя
 input_dict = {}
 for col in df.columns:
     if col == "Weather Type":
@@ -47,11 +43,9 @@ for col in df.columns:
         val = st.sidebar.slider(col, float(df[col].min()), float(df[col].max()), float(df[col].mean()))
         input_dict[col] = val
 
-# Подгоняем к нужному формату
 user_data = pd.DataFrame([input_dict])
 user_data = user_data.reindex(columns=X.columns, fill_value=0)
 
-# Предсказание
 pred = model.predict(user_data)[0]
 probs = model.predict_proba(user_data)[0]
 labels = model.classes_
